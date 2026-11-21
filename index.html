@@ -6,162 +6,79 @@
     <title>DropHunter Mini App</title>
     <script src="https://telegram.org"></script>
     <style>
-        :root {
-            --bg: #0f1115;
-            --card: #181b22;
-            --accent: #00e676;
-            --accent-dark: #00b259;
-            --text: #ffffff;
-            --muted: #8e96a4;
-            --danger: #ff5252;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 16px; padding-bottom: 40px; }
-        
-        /* Шапка */
+        :root { --bg: #0f1115; --card: #181b22; --accent: #00e676; --text: #fff; --muted: #8e96a4; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 16px; padding-bottom: 40px; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .logo { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-        .logo span { color: var(--accent); }
-        .badge-pro { background: rgba(0, 230, 118, 0.15); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
-
-        /* Фильтры */
-        .filters { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 18px; padding-bottom: 4px; }
+        .logo { font-size: 20px; font-weight: 800; } .logo span { color: var(--accent); }
+        .badge-pro { background: rgba(0,230,118,0.15); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .filters { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 18px; }
         .filter-btn { background: var(--card); border: 1px solid #2a2f3a; color: var(--text); padding: 8px 14px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; }
         .filter-btn.active { background: var(--accent); color: #000; font-weight: 700; border-color: var(--accent); }
-
-        /* Карточка товара */
         .card { background: var(--card); border-radius: 16px; overflow: hidden; margin-bottom: 18px; border: 1px solid #252932; }
-        .card-img-wrap { position: relative; width: 100%; height: 220px; background: #222630; }
+        .card-img-wrap { position: relative; width: 100%; height: 210px; background: #222630; }
         .card-img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* Бейджи поверх фото */
-        .legit-badge { position: absolute; top: 12px; left: 12px; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; backdrop-filter: blur(6px); }
-        .legit-true { background: rgba(0, 230, 118, 0.9); color: #000; }
-        .legit-warn { background: rgba(255, 171, 0, 0.9); color: #000; }
-        .time-badge { position: absolute; top: 12px; right: 12px; background: rgba(0, 0, 0, 0.7); color: #fff; padding: 5px 9px; border-radius: 8px; font-size: 11px; }
-
+        .legit-badge { position: absolute; top: 12px; left: 12px; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+        .legit-true { background: rgba(0,230,118,0.9); color: #000; }
+        .legit-warn { background: rgba(255,171,0,0.9); color: #000; }
+        .time-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.75); padding: 5px 9px; border-radius: 8px; font-size: 11px; }
         .card-body { padding: 14px; }
         .card-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
         .card-city { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
-
-        /* Блок цен и профита */
         .price-box { display: flex; justify-content: space-between; align-items: center; background: #12141a; padding: 10px 12px; border-radius: 12px; margin-bottom: 12px; }
-        .price-now { font-size: 18px; font-weight: 800; color: #fff; }
+        .price-now { font-size: 18px; font-weight: 800; }
         .price-market { font-size: 12px; color: var(--muted); text-decoration: line-through; }
-        .profit-tag { background: rgba(0, 230, 118, 0.15); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: 800; }
-
-        /* ИИ-заметка */
+        .profit-tag { background: rgba(0,230,118,0.15); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: 800; }
         .ai-note { font-size: 12px; color: #c4cad4; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px; margin-bottom: 14px; line-height: 1.4; }
-
-        /* Кнопка */
-        .btn-buy { display: block; width: 100%; text-align: center; background: var(--accent); color: #000; text-decoration: none; font-weight: 800; font-size: 14px; padding: 12px; border-radius: 12px; transition: 0.2s; }
-        .btn-buy:active { background: var(--accent-dark); transform: scale(0.98); }
+        .btn-buy { display: block; width: 100%; text-align: center; background: var(--accent); color: #000; text-decoration: none; font-weight: 800; font-size: 14px; padding: 12px; border-radius: 12px; }
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="logo">Drop<span>Hunter</span> ⚡️</div>
         <div class="badge-pro">LIVE РАДАР</div>
     </div>
-
     <div class="filters">
         <button class="filter-btn active" onclick="filterItems('all', this)">🔥 Все лоты</button>
         <button class="filter-btn" onclick="filterItems('legit', this)">✅ Только оригинал</button>
         <button class="filter-btn" onclick="filterItems('shoes', this)">👟 Кроссовки</button>
         <button class="filter-btn" onclick="filterItems('clothes', this)">🧥 Одежда</button>
     </div>
-
     <div id="feed"></div>
-
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Раскрываем приложение на весь экран
-
-        // База находок (сюда позже будут подгружаться реальные лоты с парсера)
+        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.expand(); }
         const drops = [
-            {
-                id: 1,
-                category: 'shoes',
-                isLegit: true,
-                legitText: '✅ Оригинал (94%)',
-                time: '14 сек назад',
-                title: 'Nike Dunk Low Retro Panda (42 EU)',
-                city: '📍 Москва • Авито Доставка',
-                price: '2 500 ₽',
-                marketPrice: '8 500 ₽',
-                profit: '+6 000 ₽',
-                img: 'https://unsplash.com',
-                aiComment: '🤖 ИИ-проверка: Ровная строчка на свуше, шрифт на язычке соответствует оригиналу. Продавец отдаёт срочно.',
-                url: 'https://avito.ru'
-            },
-            {
-                id: 2,
-                category: 'clothes',
-                isLegit: true,
-                legitText: '✅ Оригинал (89%)',
-                time: '1 мин назад',
-                title: 'Худи Carhartt WIP Chase Black (L)',
-                city: '📍 Санкт-Петербург',
-                price: '1 800 ₽',
-                marketPrice: '6 200 ₽',
-                profit: '+4 400 ₽',
-                img: 'https://unsplash.com',
-                aiComment: '🤖 ИИ-проверка: Золотая вышивка логотипа на рукаве четкая, фурнитура YKK. Отличная цена для перепродажи.',
-                url: 'https://avito.ru'
-            },
-            {
-                id: 3,
-                category: 'shoes',
-                isLegit: false,
-                legitText: '⚠️ Риск пали (40%)',
-                time: '3 мин назад',
-                title: 'New Balance 530 White Silver (41 EU)',
-                city: '📍 Екатеринбург',
-                price: '2 200 ₽',
-                marketPrice: '7 900 ₽',
-                profit: '+5 700 ₽',
-                img: 'https://unsplash.com',
-                aiComment: '🤖 ИИ-проверка: На фото нет коробки, шрифт на заднике слегка смазан. Запросите фото под стелькой перед покупкой.',
-                url: 'https://avito.ru'
-            }
+            { cat: 'shoes', legit: true, badge: '✅ Оригинал (94%)', time: '14 сек назад', title: 'Nike Dunk Low Retro Panda (42 EU)', city: '📍 Москва • Авито Доставка', price: '2 500 ₽', market: '8 500 ₽', profit: '+6 000 ₽', img: 'https://freepik.com', note: '🤖 ИИ-проверка: Ровная строчка на свуше, шрифт на язычке соответствует оригиналу.', url: 'https://avito.ru' },
+            { cat: 'clothes', legit: true, badge: '✅ Оригинал (89%)', time: '1 мин назад', title: 'Худи Carhartt WIP Chase Black (L)', city: '📍 Санкт-Петербург', price: '1 800 ₽', market: '6 200 ₽', profit: '+4 400 ₽', img: 'https://freepik.com', note: '🤖 ИИ-проверка: Золотая вышивка логотипа четкая, оригинальная фурнитура YKK.', url: 'https://avito.ru' },
+            { cat: 'shoes', legit: false, badge: '⚠️ Риск пали (40%)', time: '3 мин назад', title: 'New Balance 530 White Silver (41 EU)', city: '📍 Екатеринбург', price: '2 200 ₽', market: '7 900 ₽', profit: '+5 700 ₽', img: 'https://freepik.com', note: '🤖 ИИ-проверка: На фото нет коробки, шрифт на заднике смазан. Запросите фото бирки.', url: 'https://avito.ru' }
         ];
-
         function renderFeed(items) {
-            const feed = document.getElementById('feed');
-            feed.innerHTML = items.map(item => `
+            document.getElementById('feed').innerHTML = items.map(i => `
                 <div class="card">
                     <div class="card-img-wrap">
-                        <img src="${item.img}" class="card-img" alt="${item.title}">
-                        <div class="legit-badge ${item.isLegit ? 'legit-true' : 'legit-warn'}">${item.legitText}</div>
-                        <div class="time-badge">${item.time}</div>
+                        <img src="${i.img}" class="card-img">
+                        <div class="legit-badge ${i.legit ? 'legit-true' : 'legit-warn'}">${i.badge}</div>
+                        <div class="time-badge">${i.time}</div>
                     </div>
                     <div class="card-body">
-                        <div class="card-title">${item.title}</div>
-                        <div class="card-city">${item.city}</div>
+                        <div class="card-title">${i.title}</div>
+                        <div class="card-city">${i.city}</div>
                         <div class="price-box">
-                            <div>
-                                <div class="price-now">${item.price}</div>
-                                <div class="price-market">Рынок: ${item.marketPrice}</div>
-                            </div>
-                            <div class="profit-tag">Профит ${item.profit}</div>
+                            <div><div class="price-now">${i.price}</div><div class="price-market">Рынок: ${i.market}</div></div>
+                            <div class="profit-tag">Профит ${i.profit}</div>
                         </div>
-                        <div class="ai-note">${item.aiComment}</div>
-                        <a href="${item.url}" target="_blank" class="btn-buy">🔗 Открыть объявление</a>
+                        <div class="ai-note">${i.note}</div>
+                        <a href="${i.url}" target="_blank" class="btn-buy">🔗 Открыть объявление</a>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
-
         function filterItems(type, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
             if (type === 'all') renderFeed(drops);
             else if (type === 'legit') renderFeed(drops.filter(i => i.isLegit));
-            else renderFeed(drops.filter(i => i.category === type));
+            else renderFeed(drops.filter(i => i.cat === type));
         }
-
         renderFeed(drops);
     </script>
 </body>
