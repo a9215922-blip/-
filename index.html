@@ -76,7 +76,7 @@
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             if (type === 'all') renderFeed(drops);
-            else if (type === 'legit') renderFeed(drops.filter(i => i.isLegit));
+            else if (type === 'legit') renderFeed(drops.filter(i => i.legit));
             else renderFeed(drops.filter(i => i.cat === type));
         }
         renderFeed(drops);
