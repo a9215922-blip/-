@@ -2,84 +2,63 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DropHunter Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropHunter</title>
     <script src="https://telegram.org"></script>
     <style>
-        :root { --bg: #0f1115; --card: #181b22; --accent: #00e676; --text: #fff; --muted: #8e96a4; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 16px; padding-bottom: 40px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .logo { font-size: 20px; font-weight: 800; } .logo span { color: var(--accent); }
-        .badge-pro { background: rgba(0,230,118,0.15); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
-        .filters { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 18px; }
-        .filter-btn { background: var(--card); border: 1px solid #2a2f3a; color: var(--text); padding: 8px 14px; border-radius: 20px; font-size: 13px; white-space: nowrap; cursor: pointer; }
-        .filter-btn.active { background: var(--accent); color: #000; font-weight: 700; border-color: var(--accent); }
-        .card { background: var(--card); border-radius: 16px; overflow: hidden; margin-bottom: 18px; border: 1px solid #252932; }
-        .card-img-wrap { position: relative; width: 100%; height: 210px; background: #222630; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; }
-        .legit-badge { position: absolute; top: 12px; left: 12px; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-        .legit-true { background: rgba(0,230,118,0.9); color: #000; }
-        .legit-warn { background: rgba(255,171,0,0.9); color: #000; }
-        .time-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.75); padding: 5px 9px; border-radius: 8px; font-size: 11px; }
-        .card-body { padding: 14px; }
-        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-        .card-city { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
-        .price-box { display: flex; justify-content: space-between; align-items: center; background: #12141a; padding: 10px 12px; border-radius: 12px; margin-bottom: 12px; }
-        .price-now { font-size: 18px; font-weight: 800; }
-        .price-market { font-size: 12px; color: var(--muted); text-decoration: line-through; }
-        .profit-tag { background: rgba(0,230,118,0.15); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: 800; }
-        .ai-note { font-size: 12px; color: #c4cad4; background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 8px; margin-bottom: 14px; line-height: 1.4; }
-        .btn-buy { display: block; width: 100%; text-align: center; background: var(--accent); color: #000; text-decoration: none; font-weight: 800; font-size: 14px; padding: 12px; border-radius: 12px; }
+        body { background: #0f1115; color: #fff; font-family: sans-serif; padding: 15px; margin: 0; }
+        .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logo { font-size: 20px; font-weight: bold; } .logo span { color: #00e676; }
+        .live { background: #00e67622; color: #00e676; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .card { background: #181b22; border-radius: 15px; overflow: hidden; margin-bottom: 16px; border: 1px solid #252932; }
+        .pic { position: relative; height: 200px; background: #222; }
+        .pic img { width: 100%; height: 100%; object-fit: cover; }
+        .ok { position: absolute; top: 10px; left: 10px; background: #00e676; color: #000; padding: 5px 9px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+        .warn { position: absolute; top: 10px; left: 10px; background: #ffab00; color: #000; padding: 5px 9px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+        .info { padding: 14px; }
+        .name { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
+        .city { font-size: 12px; color: #8e96a4; margin-bottom: 10px; }
+        .prices { display: flex; justify-content: space-between; align-items: center; background: #12141a; padding: 10px; border-radius: 10px; margin-bottom: 10px; }
+        .p1 { font-size: 18px; font-weight: bold; } .p2 { font-size: 12px; color: #8e96a4; text-decoration: line-through; }
+        .prof { color: #00e676; font-weight: bold; font-size: 13px; }
+        .ai { font-size: 12px; color: #ccc; margin-bottom: 12px; line-height: 1.4; }
+        .btn { display: block; text-align: center; background: #00e676; color: #000; text-decoration: none; font-weight: bold; padding: 12px; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">Drop<span>Hunter</span> ⚡️</div>
-        <div class="badge-pro">LIVE РАДАР</div>
+    <div class="top"><div class="logo">Drop<span>Hunter</span> ⚡️</div><div class="live">LIVE РАДАР</div></div>
+
+    <div class="card">
+        <div class="pic"><img src="https://freepik.com"><div class="ok">✅ Оригинал (94%)</div></div>
+        <div class="info">
+            <div class="name">Nike Dunk Low Retro Panda (42 EU)</div>
+            <div class="city">📍 Москва • Авито Доставка</div>
+            <div class="prices"><div><div class="p1">2 500 ₽</div><div class="p2">Рынок: 8 500 ₽</div></div><div class="prof">Профит +6 000 ₽</div></div>
+            <div class="ai">🤖 ИИ-проверка: Ровная строчка на свуше, шрифт на язычке соответствует оригиналу.</div>
+            <a href="https://avito.ru" target="_blank" class="btn">🔗 Открыть объявление</a>
+        </div>
     </div>
-    <div class="filters">
-        <button class="filter-btn active" onclick="filterItems('all', this)">🔥 Все лоты</button>
-        <button class="filter-btn" onclick="filterItems('legit', this)">✅ Только оригинал</button>
-        <button class="filter-btn" onclick="filterItems('shoes', this)">👟 Кроссовки</button>
-        <button class="filter-btn" onclick="filterItems('clothes', this)">🧥 Одежда</button>
+
+    <div class="card">
+        <div class="pic"><img src="https://freepik.com"><div class="ok">✅ Оригинал (89%)</div></div>
+        <div class="info">
+            <div class="name">Худи Carhartt WIP Chase Black (L)</div>
+            <div class="city">📍 Санкт-Петербург</div>
+            <div class="prices"><div><div class="p1">1 800 ₽</div><div class="p2">Рынок: 6 200 ₽</div></div><div class="prof">Профит +4 400 ₽</div></div>
+            <div class="ai">🤖 ИИ-проверка: Золотая вышивка логотипа четкая, оригинальная фурнитура YKK.</div>
+            <a href="https://avito.ru" target="_blank" class="btn">🔗 Открыть объявление</a>
+        </div>
     </div>
-    <div id="feed"></div>
-    <script>
-        if (window.Telegram && window.Telegram.WebApp) { window.Telegram.WebApp.expand(); }
-        const drops = [
-            { cat: 'shoes', legit: true, badge: '✅ Оригинал (94%)', time: '14 сек назад', title: 'Nike Dunk Low Retro Panda (42 EU)', city: '📍 Москва • Авито Доставка', price: '2 500 ₽', market: '8 500 ₽', profit: '+6 000 ₽', img: 'https://freepik.com', note: '🤖 ИИ-проверка: Ровная строчка на свуше, шрифт на язычке соответствует оригиналу.', url: 'https://avito.ru' },
-            { cat: 'clothes', legit: true, badge: '✅ Оригинал (89%)', time: '1 мин назад', title: 'Худи Carhartt WIP Chase Black (L)', city: '📍 Санкт-Петербург', price: '1 800 ₽', market: '6 200 ₽', profit: '+4 400 ₽', img: 'https://freepik.com', note: '🤖 ИИ-проверка: Золотая вышивка логотипа четкая, оригинальная фурнитура YKK.', url: 'https://avito.ru' },
-            { cat: 'shoes', legit: false, badge: '⚠️ Риск пали (40%)', time: '3 мин назад', title: 'New Balance 530 White Silver (41 EU)', city: '📍 Екатеринбург', price: '2 200 ₽', market: '7 900 ₽', profit: '+5 700 ₽', img: 'https://freepik.com', note: '🤖 ИИ-проверка: На фото нет коробки, шрифт на заднике смазан. Запросите фото бирки.', url: 'https://avito.ru' }
-        ];
-        function renderFeed(items) {
-            document.getElementById('feed').innerHTML = items.map(i => `
-                <div class="card">
-                    <div class="card-img-wrap">
-                        <img src="${i.img}" class="card-img">
-                        <div class="legit-badge ${i.legit ? 'legit-true' : 'legit-warn'}">${i.badge}</div>
-                        <div class="time-badge">${i.time}</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-title">${i.title}</div>
-                        <div class="card-city">${i.city}</div>
-                        <div class="price-box">
-                            <div><div class="price-now">${i.price}</div><div class="price-market">Рынок: ${i.market}</div></div>
-                            <div class="profit-tag">Профит ${i.profit}</div>
-                        </div>
-                        <div class="ai-note">${i.note}</div>
-                        <a href="${i.url}" target="_blank" class="btn-buy">🔗 Открыть объявление</a>
-                    </div>
-                </div>`).join('');
-        }
-        function filterItems(type, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            if (type === 'all') renderFeed(drops);
-            else if (type === 'legit') renderFeed(drops.filter(i => i.legit));
-            else renderFeed(drops.filter(i => i.cat === type));
-        }
-        renderFeed(drops);
-    </script>
+
+    <div class="card">
+        <div class="pic"><img src="https://freepik.com"><div class="warn">⚠️ Риск пали (40%)</div></div>
+        <div class="info">
+            <div class="name">New Balance 530 White Silver (41 EU)</div>
+            <div class="city">📍 Екатеринбург</div>
+            <div class="prices"><div><div class="p1">2 200 ₽</div><div class="p2">Рынок: 7 900 ₽</div></div><div class="prof">Профит +5 700 ₽</div></div>
+            <div class="ai">🤖 ИИ-проверка: На фото нет коробки, шрифт на заднике смазан. Запросите фото бирки.</div>
+            <a href="https://avito.ru" target="_blank" class="btn">🔗 Открыть объявление</a>
+        </div>
+    </div>
 </body>
 </html>
